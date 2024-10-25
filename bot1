@@ -1,0 +1,42 @@
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler
+
+# Função que será executada quando o usuário enviar o comando /start
+async def start(update, context):
+    # Criando os botões do teclado inline com os novos nomes e funções
+    keyboard = [
+        [InlineKeyboardButton("Assinatura Mensal R$8,90", callback_data='mensal')],
+        [InlineKeyboardButton("Assinatura Vitalícia R$39,90", callback_data='vitalicia')],
+        [InlineKeyboardButton("Acessar Prévias do Canal", url='https://t.me/putariavip2024w')],
+    ]
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    # Enviando a mensagem com o teclado inline
+    await update.message.reply_text('Escolha uma opção:', reply_markup=reply_markup)
+
+# Função para processar os cliques nos botões do teclado inline
+async def button(update, context):
+    query = update.callback_query
+    await query.answer()
+    
+    # Verificando qual botão foi clicado e enviando a resposta correspondente
+    if query.data == 'mensal':
+        await query.edit_message_text(text="Você escolheu: Assinatura Mensal R$5,90")
+    elif query.data == 'vitalicia':
+        await query.edit_message_text(text="Você escolheu: Assinatura Vitalícia R$29,90")
+
+# Função principal que inicializa o bot
+def main():
+    # Substitua "YOUR_TOKEN" pelo token do seu bot
+    application = Application.builder().token("8136271223:AAGou9QIKA6dYX1jLDAulj4oHII4ajlG0eY").build()
+    
+    # Adicionando os handlers
+    application.add_handler(CommandHandler('start', start))
+    application.add_handler(CallbackQueryHandler(button))
+    
+    # Inicia o bot
+    application.run_polling()
+
+if __name__ == '__main__':
+    main()
